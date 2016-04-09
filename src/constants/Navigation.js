@@ -1,0 +1,6 @@
+export const INIT    = 'NAVIGATION:INIT'
+export const PUSH    = 'NAVIGATION:PUSH'
+export const REPLACE = 'NAVIGATION:REPLACE'
+export const POP     = 'NAVIGATION:POP'
+export const JUMP    = 'NAVIGATION:JUMP'
+export const RESET   = 'NAVIGATION:RESET'
