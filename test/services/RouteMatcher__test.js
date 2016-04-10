@@ -42,17 +42,8 @@ describe.only("Services/RouteMatcher",  () => {
     });
 
     it("should find the route with path pattern", () => {
-      expect(RouteMatcher(sampleRoutes, '/users/1')).to
-        .be.eq(new RouteStack({path: '/users/1', component: UserDetail, params: new Map({id: '1'})}) )
-    });
-
-  });
-
-  describe("getting route with predefined pattern", () => {
-    describe("when target passsed as string", () => {
-      it("should find the correct route", () => {
-        expect()
-      });
+      expect(RouteMatcher(sampleRoutes, '/users/1/contents/12')).to
+        .be.eq(new RouteStack({path: '/users/1/contents/12', component: UserContentDetail, params: new Map({id: '1', content_id: '12'})}) )
     });
   });
 });
