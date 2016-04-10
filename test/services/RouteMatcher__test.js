@@ -9,7 +9,7 @@ class UserDetail        extends Component{render(){ return null }}
 class UserContents      extends Component{render(){ return null }}
 class UserContentDetail extends Component{render(){ return null }}
 
-describe.only("Services/RouteMatcher",  () => {
+describe("Services/RouteMatcher",  () => {
   const sampleRoutes = [
     {
       path: '/',

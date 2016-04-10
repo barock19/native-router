@@ -26,6 +26,9 @@
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
     "chai-immutable": "^1.5.4",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "mockery": "^1.4.1",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0"
   }
 }

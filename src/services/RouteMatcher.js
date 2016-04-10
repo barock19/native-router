@@ -31,7 +31,7 @@ const stringPatternHandler = (routes, route)=>{
         let BSegment = BSegments[i]
         if(ASegment != BSegment){
           possiblyFoundedPattern.push(BSegment)
-          patternToValueMap[BSegment] =  ASegment
+          patternToValueMap[BSegment.replace(':', '')] =  ASegment
         }
       })
       return BSegmentsPatterns.join('-') == possiblyFoundedPattern.join('-')

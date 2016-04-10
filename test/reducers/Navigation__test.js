@@ -1,7 +1,8 @@
-import {List} from 'immutable'
+import {List, Map} from 'immutable'
 import * as NavConst from "constants/Navigation"
 import Reducer , {InitialState, RouteStack } from "reducers/Navigation"
 import * as NavAction from "actions/Navigation"
+import sinon from 'sinon'
 
 describe("Reducer/Navigation", () => {
   let sampleRoute = new RouteStack({path: '/'})
@@ -56,6 +57,14 @@ describe("Reducer/Navigation", () => {
       const stack = nextState.get('stack')
       expect(stack).to.be.empty
       expect(nextState.get('navigationType')).to.be.eq(NavConst.RESET)
+    });
+  });
+
+  describe("when LOST", () => {
+    it("should set navigationType as LOST", () => {
+      const currentState = new InitialState({stateInitialized: true, stack: List.of(sampleRoute)})
+      const nextState = Reducer(currentState, NavAction.lost())
+      expect(nextState.get('navigationType')).to.be.eq(NavConst.LOST)
     });
   });
 });
