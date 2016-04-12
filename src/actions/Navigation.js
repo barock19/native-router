@@ -1,4 +1,6 @@
-import RouteMatcher from "services/RouteMatcher"
+import {fromJS, List, Map} from "immutable";
+import RouteMatcher, {routeToSegment} from "services/RouteMatcher"
+import {RouteStack} from 'reducers/Navigation'
 import {
   INIT,
   PUSH,
@@ -14,10 +16,10 @@ export function pop() {
     type: POP
   }
 }
-export function init(navigation) {
+export function init(routes) {
   return {
     type: INIT,
-    navigation
+    routes
   }
 }
 
@@ -77,5 +79,17 @@ export function back(){
     else {
       dispatch(pop())
     }
+  }
+}
+
+export function initialize(routesList) {
+  return (dispatch, getState)=>{
+    const parsedRoutes = routesList
+      .map((item)=>{
+        item._segmentInfo = routeToSegment(item.path)
+        return item
+      })
+      .map(item => new RouteStack(item))
+    dispatch(init(parsedRoutes))
   }
 }

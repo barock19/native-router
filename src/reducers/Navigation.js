@@ -27,7 +27,9 @@ export const InitialState = Record({
 export default (state = new InitialState(), action)=>{
   switch (action.type) {
     case INIT:
-      return state.set('stateInitialized', true)
+      return state
+        .set('stateInitialized', true)
+        .set('routes', action.routes)
     case PUSH:
       return state
         .set('lostRoute', null)

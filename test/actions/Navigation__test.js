@@ -1,18 +1,14 @@
+require('test-helper')
+
 import {List, Map} from "immutable"
 import mockery from 'mockery'
 import sinon from 'sinon'
 import * as NavConts from 'constants/Navigation'
 
-describe("actions/Navigation", () => {
+describe("Actions/Navigation", () => {
   describe("#to", () => {
     let RouteMatcherStub, to
-    before(() => {
-      mockery.enable({
-        warnOnReplace: false,
-        warnOnUnregistered: false,
-        useCleanCache: true
-      });
-
+    beforeEach(() => {
       RouteMatcherStub = sinon.stub()
       mockery.registerMock('services/RouteMatcher', RouteMatcherStub)
       to = require('actions/Navigation').to
@@ -41,6 +37,31 @@ describe("actions/Navigation", () => {
       dispatcher(to(sampleRoute))
       expect(sampleDispatch).to.have.been.calledWith( sinon.match(
         { type: NavConts.PUSH}))
+    });
+  });
+  describe("#initialize", () => {
+    let routeToSegmentStub, initialize, sampleDispatch, sampleGetState, dispatcher
+    let samplePlainRoutes = [
+      {path: '/users/:id'}
+    ]
+
+    beforeEach(() => {
+      routeToSegmentStub = sinon.stub()
+      mockery.registerMock('services/RouteMatcher', {routeToSegment: routeToSegmentStub})
+      initialize = require('actions/Navigation').initialize
+      sampleDispatch = sinon.stub()
+      sampleGetState = sinon.stub().returns({})
+      dispatcher = sinon.stub().yields(sampleDispatch, sampleGetState)
+    });
+
+    it('should parsed given plain object of routes', ()=>{
+      dispatcher(initialize(samplePlainRoutes))
+      expect(routeToSegmentStub).to.have.been.calledWith('/users/:id')
+    })
+
+    it("should dispatch INIT action", () => {
+      dispatcher(initialize(samplePlainRoutes))
+      expect(sampleDispatch).to.have.been.calledWith(sinon.match({type: NavConts.INIT}))
     });
   });
 });

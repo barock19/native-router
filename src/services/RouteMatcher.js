@@ -1,7 +1,7 @@
 import {Map} from "immutable";
 import {RouteStack} from "reducers/Navigation";
 
-function routeToSegment(route) {
+const routeToSegment = (route)=>{
   let segments = route.split('/').filter( seg => seg != '')
   let patterns = segments.filter(seg => seg.match(/^\:(\w+)/))
   let length = segments.length
@@ -51,7 +51,7 @@ const stringHandler = (routes, route)=>{
 const recordHandler = (routes, route)=>{
 }
 
-export default (routes, route)=> {
+const RouteMatcher= (routes, route)=> {
   if(typeof(route) == 'string')
     return stringHandler(routes, route);
   else if (route instanceof RouteStack)
@@ -59,3 +59,5 @@ export default (routes, route)=> {
   else
     return false;
 }
+
+export{ RouteMatcher as default, routeToSegment}

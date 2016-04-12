@@ -1,3 +1,5 @@
+require('test-helper')
+
 import React,{Component} from "react";
 import {Map} from "immutable";
 import RouteMatcher from "services/RouteMatcher"
