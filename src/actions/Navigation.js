@@ -89,7 +89,6 @@ export function initialize(routesList) {
         item._segmentInfo = routeToSegment(item.path)
         return item
       })
-      .map(item => new RouteStack(item))
     dispatch(init(parsedRoutes))
   }
 }

@@ -59,9 +59,15 @@ describe("Actions/Navigation", () => {
       expect(routeToSegmentStub).to.have.been.calledWith('/users/:id')
     })
 
-    it("should dispatch INIT action", () => {
+    it("should dispatch INIT action including routes with `segments info`", () => {
+      let double = sinon.spy()
+      routeToSegmentStub.returns(double)
       dispatcher(initialize(samplePlainRoutes))
-      expect(sampleDispatch).to.have.been.calledWith(sinon.match({type: NavConts.INIT}))
+      expect(sampleDispatch).to
+        .have.been.calledWith(sinon.match({type: NavConts.INIT, routes: [{
+          path: '/users/:id',
+          _segmentInfo: double
+        }]}))
     });
   });
 });
