@@ -1,5 +1,4 @@
-import {Map} from "immutable";
-import {RouteStack} from "reducers/Navigation";
+import {omit, isEmpty} from 'underscore'
 
 const routeToSegment = (route)=>{
   let segments = route.split('/').filter( seg => seg != '')
@@ -14,14 +13,12 @@ const stringPatternHandler = (routes, route)=>{
   let patternToValueMap = {}
 
   let foundTarget = routes
-    .map( route => { return {route, _segmentInfo: routeToSegment(route.path)} })
     .find( (item) => {
-      if(item._segmentInfo.length != length)
-        return false;
-
-      if(item.route.path == route)
+      if(item.path == route)
         return true;
 
+      if(item._segmentInfo.length != length)
+        return false;
       let ASegments = segments
       let BSegments =  item._segmentInfo.segments
       let BSegmentsPatterns = item._segmentInfo.patterns
@@ -40,13 +37,14 @@ const stringPatternHandler = (routes, route)=>{
   if(!foundTarget)
     return false;
   else {
-    return Object.assign({}, foundTarget.route, {path: route, params: new Map(patternToValueMap)})
+    let finalObject = isEmpty(patternToValueMap) ? {path: route} : {path: route , params: patternToValueMap}
+    return Object.assign({}, omit(foundTarget, '_segmentInfo'), finalObject)
   }
 }
 
 const stringHandler = (routes, route)=>{
   let foundTarget = stringPatternHandler(routes, route)
-  return foundTarget ?  new RouteStack(foundTarget) : false
+  return foundTarget ?  foundTarget : false
 }
 const recordHandler = (routes, route)=>{
 }
@@ -54,7 +52,7 @@ const recordHandler = (routes, route)=>{
 const RouteMatcher= (routes, route)=> {
   if(typeof(route) == 'string')
     return stringHandler(routes, route);
-  else if (route instanceof RouteStack)
+  else if (route instanceof Object)
     return recordHandler(routes, route);
   else
     return false;
