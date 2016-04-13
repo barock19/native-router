@@ -1,6 +1,6 @@
 require('test-helper')
 import sinon from "sinon";
-import React,{Component} from "react";
+import React,{Component} from "react-native";
 import RouteMatcher from "services/RouteMatcher"
 
 class Home              extends Component{render(){ return null }}
