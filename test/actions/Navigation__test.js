@@ -6,6 +6,17 @@ import sinon from 'sinon'
 import * as NavConts from 'constants/Navigation'
 
 describe("Actions/Navigation", () => {
+
+  beforeEach(() => {
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false,
+      useCleanCache: true
+    });
+  });
+  afterEach(() => {
+    mockery.disable()
+  });
   describe("#to", () => {
     let RouteMatcherStub, to
     beforeEach(() => {
