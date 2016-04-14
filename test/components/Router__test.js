@@ -1,9 +1,7 @@
-require('test-helper')
 import React,{ Navigator, createClass} from "react-native"
-import {mockComponent} from "react-addons-test-utils";
-import mocker from "mockery"
-import {Map} from "immutable"
-import {shallow, mount} from 'enzyme'
+var {shallow, mount} = require('enzyme')
+import {Map, List} from "immutable"
+import {RouteStack} from "reducers/Navigation";
 import sinon from 'sinon'
 import Router,{Route} from 'components/Router'
 
@@ -26,7 +24,9 @@ describe("Components/Router", () => {
         Router.__Rewire__('initialize', NavActionsInitStub)
 
         NavigationState = new Map({
-          stateInitialized: false
+          stateInitialized: false,
+          routes: [],
+          stack: List()
         })
 
         comp1 = class extends React.Component {render(){return null}}
@@ -45,6 +45,25 @@ describe("Components/Router", () => {
         expect(NavActionsInitStub).to.have.been.calledWith(sinon.match(wrapper.instance().routes))
         expect(dispatcher).to.have.been.calledWith('INIT').once
       })
+
+      describe("when Navigation props updated", () => {
+        let RouteMatcherStub
+        beforeEach(()=>{
+          NavigationState = new Map({
+            stateInitialized: true,
+            routes: [],
+            stack: List.of( new RouteStack({path: '/'}) )
+          })
+          wrapper.setProps({Navigation: NavigationState})
+        })
+        it("should set `stateInitialized` && `initialRoute`", () => {
+          let inst = wrapper.instance()
+          expect(inst.stateInitialized).to.be.true
+          expect(inst.initialRoute).to.eql(new RouteStack({path: '/'}))
+        });
+      });
     });
+
+
   });
 });

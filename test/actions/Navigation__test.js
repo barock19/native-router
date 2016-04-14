@@ -1,28 +1,17 @@
 require('test-helper')
 
 import {List, Map} from "immutable"
-import mockery from 'mockery'
 import sinon from 'sinon'
 import * as NavConts from 'constants/Navigation'
+import {to, initialize, __RewireAPI__ as NavigationRewire} from "actions/Navigation"
 
 describe("Actions/Navigation", () => {
 
-  beforeEach(() => {
-    mockery.enable({
-      warnOnReplace: false,
-      warnOnUnregistered: false,
-      useCleanCache: true
-    });
-  });
-  afterEach(() => {
-    mockery.disable()
-  });
   describe("#to", () => {
-    let RouteMatcherStub, to
+    let RouteMatcherStub
     beforeEach(() => {
       RouteMatcherStub = sinon.stub()
-      mockery.registerMock('services/RouteMatcher', RouteMatcherStub)
-      to = require('actions/Navigation').to
+      NavigationRewire.__Rewire__('RouteMatcher', RouteMatcherStub)
     });
 
     it("should matchs the route", () => {
@@ -51,15 +40,14 @@ describe("Actions/Navigation", () => {
     });
   });
   describe("#initialize", () => {
-    let routeToSegmentStub, initialize, sampleDispatch, sampleGetState, dispatcher
+    let routeToSegmentStub, sampleDispatch, sampleGetState, dispatcher
     let samplePlainRoutes = [
       {path: '/users/:id'}
     ]
 
     beforeEach(() => {
       routeToSegmentStub = sinon.stub()
-      mockery.registerMock('services/RouteMatcher', {routeToSegment: routeToSegmentStub})
-      initialize = require('actions/Navigation').initialize
+      NavigationRewire.__Rewire__('routeToSegment', routeToSegmentStub)
       sampleDispatch = sinon.stub()
       sampleGetState = sinon.stub().returns({})
       dispatcher = sinon.stub().yields(sampleDispatch, sampleGetState)
@@ -70,15 +58,22 @@ describe("Actions/Navigation", () => {
       expect(routeToSegmentStub).to.have.been.calledWith('/users/:id')
     })
 
-    it("should dispatch INIT action including routes with `segments info`", () => {
-      let double = sinon.spy()
-      routeToSegmentStub.returns(double)
-      dispatcher(initialize(samplePlainRoutes))
+    it("should dispatch INIT action including routes with `segments info` and initialroute", () => {
+      let segmentInfoDouble = sinon.spy()
+      let initialrouteDouble = sinon.spy()
+      routeToSegmentStub.returns(segmentInfoDouble)
+      let RouteMatcherStub = sinon.stub().returns({path: '/'})
+      let createRouteStackStub = sinon.stub().returns(initialrouteDouble)
+
+      NavigationRewire.__Rewire__('RouteMatcher', RouteMatcherStub )
+      NavigationRewire.__Rewire__('createRouteStack', createRouteStackStub)
+
+      dispatcher(initialize(samplePlainRoutes, '/'))
       expect(sampleDispatch).to
         .have.been.calledWith(sinon.match({type: NavConts.INIT, routes: [{
           path: '/users/:id',
-          _segmentInfo: double
-        }]}))
+          _segmentInfo: segmentInfoDouble
+        }], initialRoute: initialrouteDouble}))
     });
   });
 });

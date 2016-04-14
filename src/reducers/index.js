@@ -1,4 +1,4 @@
-import { reducer as router } from 'react-native-router-redux';
-export {
-  router
-};
+import Navigation from "./Navigation";
+export default {
+  Navigation
+}

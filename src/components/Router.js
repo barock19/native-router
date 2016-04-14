@@ -30,13 +30,13 @@ export default class Router extends Component {
 
     componentWillReceiveProps(nextProps){
       let {Navigation} = this.props
-      let currentLastRoute = Navigation.get('routes').last()
-      let nextRoute = nextProps.Navigation.get('routes').last()
+      let currentLastRoute = Navigation.get('stack').last()
+      let nextRoute = nextProps.Navigation.get('stack').last()
       let navType = nextProps.Navigation.get('navigationType')
 
       if(!Navigation.get('stateInitialized') && nextProps.Navigation.get('stateInitialized')){
         this.stateInitialized = true
-        this.initialRoute = RouteMatcher(nextProps.Navigation.get('routes'), this.props.initial)
+        this.initialRoute = nextRoute
       }else if (this.stateInitialized && (nextRoute && (currentLastRoute != nextRoute) ) ){
         transitionHandler(nextRoute.toJS(), navType)
       }

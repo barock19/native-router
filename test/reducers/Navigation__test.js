@@ -8,12 +8,14 @@ describe("Reducer/Navigation", () => {
   let sampleRoute = new RouteStack({path: '/'})
 
   describe("when INIT", () => {
-    it("should set `initialized` as true, and routes", () => {
+    it("should set `initialized` as true, routes and initial stack", () => {
       const currentState = new InitialState({stateInitialized: false})
       const routes = List()
-      const nextState = Reducer(currentState, NavAction.init(routes))
+      const initialRoute = new RouteStack({path: '/'})
+      const nextState = Reducer(currentState, NavAction.init(routes, initialRoute) )
       expect(nextState.get('stateInitialized')).to.be.true
       expect(nextState.get('routes')).to.be.eq(routes)
+      expect(nextState.get('stack').get(0)).to.equal(initialRoute)
     });
   });
 

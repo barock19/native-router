@@ -30,6 +30,7 @@ export default (state = new InitialState(), action)=>{
       return state
         .set('stateInitialized', true)
         .set('routes', action.routes)
+        .updateIn(['stack'], stack => stack.push(action.initialRoute))
     case PUSH:
       return state
         .set('lostRoute', null)

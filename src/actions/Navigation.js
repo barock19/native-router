@@ -11,15 +11,20 @@ import {
   LOST
 } from 'constants/Navigation'
 
+function createRouteStack(route) {
+  return new RouteStack(route)
+}
+
 export function pop() {
   return {
     type: POP
   }
 }
-export function init(routes) {
+export function init(routes, initialRoute) {
   return {
     type: INIT,
-    routes
+    routes,
+    initialRoute
   }
 }
 
@@ -82,13 +87,20 @@ export function back(){
   }
 }
 
-export function initialize(routesList) {
+export function initialize(routesList, initial) {
   return (dispatch, getState)=>{
-    const parsedRoutes = routesList
+    let parsedRoutes = routesList
       .map((item)=>{
         item._segmentInfo = routeToSegment(item.path)
         return item
       })
-    dispatch(init(parsedRoutes))
+    let initialRouteaFound = RouteMatcher(parsedRoutes, initial)
+    let initialRoute
+
+    if(initialRouteaFound){
+      initialRoute = createRouteStack(initialRouteaFound)
+    }
+
+    dispatch(init(parsedRoutes, initialRoute))
   }
 }
