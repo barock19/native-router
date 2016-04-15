@@ -49,7 +49,7 @@ export default (state = new InitialState(), action)=>{
     case RESET:
       return state
         .set('lostRoute', null)
-        .updateIn(['stack'], stack => List())
+        .updateIn(['stack'], stack => List([action.route]))
         .set('navigationType', RESET)
     case LOST:
       return state

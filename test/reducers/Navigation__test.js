@@ -55,11 +55,13 @@ describe("Reducer/Navigation", () => {
   });
 
   describe("when RESET", () => {
-    it("should make the stack empty", () => {
+    it("should add one route to stack", () => {
       const currentState = new InitialState({stateInitialized: true, stack: List.of(sampleRoute)})
-      const nextState = Reducer(currentState, NavAction.reset())
+      const route = new RouteStack()
+      const nextState = Reducer(currentState, NavAction.reset(route))
       const stack = nextState.get('stack')
-      expect(stack).to.be.empty
+      expect(stack.count()).to.be.eq(1)
+      expect(stack.first()).to.be.eq(route)
       expect(nextState.get('navigationType')).to.be.eq(NavConst.RESET)
     });
   });

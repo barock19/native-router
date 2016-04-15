@@ -1,7 +1,6 @@
 import React,{Component, Navigator, PropTypes, StyleSheet, Text} from "react-native";
 import * as NavConst from "constants/Navigation"
 import {initialize} from "actions/Navigation"
-import RouteMatcher from "services/RouteMatcher"
 
 export class Route extends React.Component {
   static propTypes = {
@@ -22,7 +21,7 @@ export default class Router extends Component {
       super(props)
       this.routes = []
       this.stateInitialized = false
-      let { Navigation, dispatch, initial, children } = this.props
+      let { Navigation, dispatch, children } = this.props
 
       if(Navigation && !Navigation.get('stateInitialized'))
         this.parseRoutes(children, dispatch);
@@ -33,21 +32,26 @@ export default class Router extends Component {
       let currentLastRoute = Navigation.get('stack').last()
       let nextRoute = nextProps.Navigation.get('stack').last()
       let navType = nextProps.Navigation.get('navigationType')
-
       if(!Navigation.get('stateInitialized') && nextProps.Navigation.get('stateInitialized')){
         this.stateInitialized = true
         this.initialRoute = nextRoute
-      }else if (this.stateInitialized && (nextRoute && (currentLastRoute != nextRoute) ) ){
-        transitionHandler(nextRoute.toJS(), navType)
+      }else if (this.stateInitialized && navType != NavConst.LOST && (nextRoute && (currentLastRoute != nextRoute) ) ){
+        this.transitionHandler(nextRoute.toJS(), navType)
       }
     }
 
     transitionHandler(route, navType){
       switch (navType) {
-        case NavConst.PUSH: this.navigator.push(route)
-        case NavConst.RESET: this.navigator.reset()
+        case NavConst.PUSH:
+          return this.navigator.push(route)
+        case NavConst.RESET:
+          return this.navigator.resetTo(route)
+        case NavConst.POP:
+          return this.navigator.pop()
+        case NavConst.REPLACE:
+          return this.navigator.replace(route)
         default:
-
+          return false
       }
     }
 

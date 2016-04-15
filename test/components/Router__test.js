@@ -4,6 +4,7 @@ import {Map, List} from "immutable"
 import {RouteStack} from "reducers/Navigation";
 import sinon from 'sinon'
 import Router,{Route} from 'components/Router'
+import * as NavConst from "constants/Navigation";
 
 describe("Components/Router", () => {
   let wrapper, dispatcher, NavigationState, MockRouter
@@ -46,8 +47,7 @@ describe("Components/Router", () => {
         expect(dispatcher).to.have.been.calledWith('INIT').once
       })
 
-      describe("when Navigation props updated", () => {
-        let RouteMatcherStub
+      describe("when Navigation props updated (by Initialize)", () => {
         beforeEach(()=>{
           NavigationState = new Map({
             stateInitialized: true,
@@ -56,10 +56,68 @@ describe("Components/Router", () => {
           })
           wrapper.setProps({Navigation: NavigationState})
         })
+
         it("should set `stateInitialized` && `initialRoute`", () => {
           let inst = wrapper.instance()
           expect(inst.stateInitialized).to.be.true
           expect(inst.initialRoute).to.eql(new RouteStack({path: '/'}))
+        });
+
+        describe("when Navigation props updated (by modifiying Navigation#stack)", () => {
+          let transitionHandlerStub
+          beforeEach(()=>{
+            NavigationState = new Map({
+              stateInitialized: true,
+              routes: [],
+              stack: List.of( new RouteStack({path: '/'}), new RouteStack({path: '/users/1'}) ),
+              navigationType: 'PUSH'
+
+            })
+            let instance = wrapper.instance()
+            transitionHandlerStub = sinon.stub(instance, 'transitionHandler')
+            wrapper.setProps({Navigation: NavigationState})
+          })
+
+          it("should trigger `transitionHandler`", () => {
+            let instance = wrapper.instance()
+            expect(transitionHandlerStub).to.be.calledWith(sinon.match({path: '/users/1', component: null, meta: {}, params: {}}), 'PUSH').once
+          });
+
+          describe("transitionHandler", () => {
+            let wrapperInstance, sampleRoute, navigatorStub
+            beforeEach(()=>{
+              transitionHandlerStub.restore()
+
+              navigatorStub = {push : sinon.stub(), resetTo: sinon.stub(), pop: sinon.stub(),
+                replace: sinon.stub()}
+              sampleRoute = {}
+              wrapperInstance = wrapper.instance()
+              wrapperInstance.navigator = navigatorStub
+            })
+            it("should 'Push' Navigator", () => {
+              wrapperInstance.transitionHandler(sampleRoute, NavConst.PUSH)
+              expect(navigatorStub.push).to
+                .have.been.calledWith(sampleRoute)
+            });
+
+            it("should 'Reset' Navigator", () => {
+              wrapperInstance.transitionHandler(sampleRoute, NavConst.RESET)
+              expect(navigatorStub.resetTo).to
+                .have.been.calledWith(sampleRoute)
+            });
+
+            it("should 'Pop' Navigator", ()=>{
+              wrapperInstance.transitionHandler(sampleRoute, NavConst.POP)
+              expect(navigatorStub.pop).to
+                .have.been.called.once
+            })
+
+            it("should 'Replace' Navigator", () => {
+              wrapperInstance.transitionHandler(sampleRoute, NavConst.REPLACE)
+              expect(navigatorStub.replace).to
+                .have.been.calledWith(sampleRoute).once
+            });
+          });
         });
       });
     });

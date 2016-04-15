@@ -62,11 +62,7 @@ describe("Actions/Navigation", () => {
       let segmentInfoDouble = sinon.spy()
       let initialrouteDouble = sinon.spy()
       routeToSegmentStub.returns(segmentInfoDouble)
-      let RouteMatcherStub = sinon.stub().returns({path: '/'})
-      let createRouteStackStub = sinon.stub().returns(initialrouteDouble)
-
-      NavigationRewire.__Rewire__('RouteMatcher', RouteMatcherStub )
-      NavigationRewire.__Rewire__('createRouteStack', createRouteStackStub)
+      NavigationRewire.__Rewire__('createRouteStack', sinon.stub().returns(initialrouteDouble))
 
       dispatcher(initialize(samplePlainRoutes, '/'))
       expect(sampleDispatch).to
