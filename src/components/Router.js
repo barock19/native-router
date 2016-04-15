@@ -28,15 +28,29 @@ export default class Router extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-      let {Navigation} = this.props
-      let currentLastRoute = Navigation.get('stack').last()
-      let nextRoute = nextProps.Navigation.get('stack').last()
-      let navType = nextProps.Navigation.get('navigationType')
-      if(!Navigation.get('stateInitialized') && nextProps.Navigation.get('stateInitialized')){
+      let CurrentNav     = this.props.Navigation
+      let NextNav        = nextProps.Navigation
+      let currentInit    = CurrentNav.get('stateInitialized')
+      let nextInit       = NextNav.get('stateInitialized')
+      let currentRoute   = CurrentNav.get('stack').last()
+      let nextRoute      = NextNav.get('stack').last()
+      let currentNavType = CurrentNav.get('navigationType')
+      let nextNavType    = NextNav.get('navigationType')
+      let lostRoute      = NextNav.get('lostRoute')
+
+      // Navigation Initialize
+      if(!currentInit && nextInit){
         this.stateInitialized = true
         this.initialRoute = nextRoute
-      }else if (this.stateInitialized && navType != NavConst.LOST && (nextRoute && (currentLastRoute != nextRoute) ) ){
-        this.transitionHandler(nextRoute.toJS(), navType)
+      // Navigation updated stack
+      }else if (currentNavType != NavConst.LOST && (nextRoute && (currentRoute != nextRoute) ) ){
+        this.transitionHandler(nextRoute, nextNavType)
+      // Navigation recieves LostRoute
+      }else if(nextNavType == NavConst.LOST){
+        this.transitionHandler(lostRoute, NavConst.PUSH)
+      // Navigation recover from LostRoute
+      }else if(currentNavType == NavConst.LOST && nextNavType != NavConst.LOST){
+        this.transitionHandler(nextRoute, NavConst.REPLACE)
       }
     }
 

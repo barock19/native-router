@@ -79,8 +79,43 @@ describe("Components/Router", () => {
           })
 
           it("should trigger `transitionHandler`", () => {
-            let instance = wrapper.instance()
             expect(transitionHandlerStub).to.be.calledWith(sinon.match({path: '/users/1', component: null, meta: {}, params: {}}), 'PUSH').once
+          });
+
+          describe("when navType is LOST", () => {
+            let lostRoute
+            beforeEach(() => {
+              lostRoute = new Map({isLost: true})
+              wrapper.setProps({
+                Navigation: NavigationState
+                  .set('lostRoute', lostRoute)
+                  .set('navigationType', NavConst.LOST)
+              })
+            });
+
+            it("should 'Push' `lost route` to transitionHandler", () => {
+              expect(transitionHandlerStub).to
+                .be.calledWith(sinon.match(lostRoute), NavConst.PUSH).once
+            });
+
+
+            describe("when NavType change from LOST", () => {
+              let newRouteAfterLost
+              beforeEach(() => {
+                newRouteAfterLost = new Map({path: '/'})
+                wrapper.setProps({
+                  Navigation: NavigationState
+                    .set('lostRoute', null)
+                    .set('navigationType', NavConst.PUSH)
+                    .updateIn(['stack'], stack => stack.push(newRouteAfterLost))
+                })
+              });
+
+              it("should 'Repalce' the lostRoute", () => {
+                expect(transitionHandlerStub).to
+                  .be.calledWith(newRouteAfterLost, NavConst.REPLACE).once
+              });
+            });
           });
 
           describe("transitionHandler", () => {
