@@ -1,5 +1,5 @@
 {
-  "presets" : ["react-native", "es2015", "stage-0", "react"],
+  "presets" : ["react-native"],
   "env" : {
     "test" : {
       "plugins": ["rewire"]

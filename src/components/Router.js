@@ -1,4 +1,5 @@
-import React,{Component, Navigator, PropTypes, StyleSheet, Text} from "react-native";
+import React,{Component, Navigator, PropTypes, StyleSheet, Text, View} from "react-native";
+import {connect} from 'react-redux'
 import * as NavConst from "../constants/Navigation"
 import {initialize} from "../actions/Navigation"
 
@@ -16,13 +17,13 @@ export class Route extends React.Component {
     return null;
   }
 }
-export default class Router extends Component {
+class Router extends Component {
     constructor(props){
       super(props)
       this.routes = []
       this.stateInitialized = false
       let { Navigation, dispatch, children } = this.props
-
+      console.log('Navigation', Navigation)
       if(Navigation && !Navigation.get('stateInitialized'))
         this.parseRoutes(children, dispatch);
     }
@@ -86,12 +87,12 @@ export default class Router extends Component {
         let {path, component} = child.props
         this.routes.push({path, component})
       })
-
+      console.log('this.rooutes', this.routes)
     }
     componentDidMount(){
       let {dispatch} = this.props
       if(this.routes.length > 0)
-        dispatch(initialize(this.routes));
+        dispatch(initialize(this.routes, '/'));
     }
 
     renderSceneHandler(route, navigator ){
@@ -109,6 +110,8 @@ export default class Router extends Component {
 
 
 }
+
+export default connect( (state) => { return { Navigation: state.Navigation } })(Router)
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
