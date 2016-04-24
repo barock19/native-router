@@ -1,9 +1,8 @@
-require('test-helper')
 
 import {List, Map} from "immutable"
 import sinon from 'sinon'
-import * as NavConts from 'constants/Navigation'
-import {to, initialize, __RewireAPI__ as NavigationRewire} from "actions/Navigation"
+import * as NavConts from '../../src/constants/Navigation'
+import {to, initialize, __RewireAPI__ as NavigationRewire} from "../../src/actions/Navigation"
 
 describe("Actions/Navigation", () => {
 

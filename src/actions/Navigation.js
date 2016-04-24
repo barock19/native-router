@@ -1,6 +1,6 @@
 import {fromJS, List, Map} from "immutable";
-import RouteMatcher, {routeToSegment} from "services/RouteMatcher"
-import {RouteStack} from 'reducers/Navigation'
+import RouteMatcher, {routeToSegment} from "../services/RouteMatcher"
+import {RouteStack} from '../reducers/Navigation'
 import {
   INIT,
   PUSH,
@@ -9,7 +9,7 @@ import {
   POP,
   RESET,
   LOST
-} from 'constants/Navigation'
+} from '../constants/Navigation'
 
 function createRouteStack(route) {
   return new RouteStack(route)

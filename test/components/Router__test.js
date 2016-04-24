@@ -1,10 +1,10 @@
 import React,{ Navigator, createClass} from "react-native"
 var {shallow, mount} = require('enzyme')
 import {Map, List} from "immutable"
-import {RouteStack} from "reducers/Navigation";
+import {RouteStack} from "../../src/reducers/Navigation";
 import sinon from 'sinon'
-import Router,{Route} from 'components/Router'
-import * as NavConst from "constants/Navigation";
+import Router,{Route} from '../../src/components/Router'
+import * as NavConst from "../../src/constants/Navigation";
 
 describe("Components/Router", () => {
   let wrapper, dispatcher, NavigationState, MockRouter

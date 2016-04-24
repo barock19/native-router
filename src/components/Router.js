@@ -1,6 +1,6 @@
 import React,{Component, Navigator, PropTypes, StyleSheet, Text} from "react-native";
-import * as NavConst from "constants/Navigation"
-import {initialize} from "actions/Navigation"
+import * as NavConst from "../constants/Navigation"
+import {initialize} from "../actions/Navigation"
 
 export class Route extends React.Component {
   static propTypes = {

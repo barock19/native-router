@@ -1,7 +1,7 @@
 import {List, Map} from 'immutable'
-import * as NavConst from "constants/Navigation"
-import Reducer , {InitialState, RouteStack } from "reducers/Navigation"
-import * as NavAction from "actions/Navigation"
+import * as NavConst from "../../src/constants/Navigation"
+import Reducer , {InitialState, RouteStack } from "../../src/reducers/Navigation"
+import * as NavAction from "../../src/actions/Navigation"
 import sinon from 'sinon'
 
 describe("Reducer/Navigation", () => {

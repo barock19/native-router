@@ -7,7 +7,7 @@ import {
   POP,
   RESET,
   LOST
-} from 'constants/Navigation'
+} from '../constants/Navigation'
 
 export const RouteStack = Record({
   path: '/',

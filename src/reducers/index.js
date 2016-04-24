@@ -1,4 +1,1 @@
-import Navigation from "./Navigation";
-export default {
-  Navigation
-}
+import {default as Navigation} from "./Navigation";
