@@ -74,7 +74,7 @@ export default class App extends Component {
       ref={ drawer => this.drawer = drawer }
       >
         <Router
-          navigationBar={<Toolbar onIconPress={ ()=> drawer.openDrawer() } />}
+          navigationBar={<Toolbar onIconPress={ ()=> this.drawer && this.drawer.openDrawer() } />}
           >
           <Route path='/' component={PageOne} />
           <Route path='/page_two' component={PageTwo} />
