@@ -1,5 +1,5 @@
-
 import {List, Map} from "immutable"
+import {RouteStack} from '../../src/reducers/Navigation'
 import sinon from 'sinon'
 import * as NavConts from '../../src/constants/Navigation'
 import {to, initialize, __RewireAPI__ as NavigationRewire} from "../../src/actions/Navigation"
@@ -25,7 +25,7 @@ describe("Actions/Navigation", () => {
     });
 
     it("should dispatch `push` when route found", () => {
-      const sampleFoundRoute = Map({path: '/users/10'})
+      const sampleFoundRoute = {path: '/users/10'}
       RouteMatcherStub.returns(sampleFoundRoute)
       const sampleDispatch = sinon.stub()
       const sampleRoutes = List()
@@ -35,8 +35,22 @@ describe("Actions/Navigation", () => {
 
       dispatcher(to(sampleRoute))
       expect(sampleDispatch).to.have.been.calledWith( sinon.match(
-        { type: NavConts.PUSH}))
+        { type: NavConts.PUSH , route: new RouteStack(sampleFoundRoute) }))
     });
+
+    it.only("should merge second option into RouteStack instance", ()=>{
+      const sampleFoundRoute = {path: '/users/10'}
+      RouteMatcherStub.returns(sampleFoundRoute)
+      const sampleDispatch = sinon.stub()
+      const sampleRoutes = List()
+      const sampleRoute = '/users/10'
+      const sampleGetState = sinon.stub().returns({Navigation: new Map({routes: List()})})
+      const dispatcher = sinon.stub().yields(sampleDispatch, sampleGetState)
+
+      dispatcher(to(sampleRoute, {meta: {title: 'Hello'} } ))
+      expect(sampleDispatch).to.have.been.calledWith( sinon.match(
+        {route: new RouteStack( {...sampleFoundRoute, meta: Map({title: 'Hello'})} ), type: NavConts.PUSH }))
+    })
   });
   describe("#initialize", () => {
     let routeToSegmentStub, sampleDispatch, sampleGetState, dispatcher

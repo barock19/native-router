@@ -26,7 +26,7 @@ styles.button = {
 class ToolbarComp extends Component {
   render(){
     const { onIconPress, navigator } = this.props;
-    const currentRoute = navigator & navigator.get('stack').count > 0 ? navigator.get('stack').last() : false
+    const currentRoute = navigator && navigator.get('stack').count() > 0 ? navigator.get('stack').last() : false
     const title =  currentRoute && currentRoute.getIn(['meta', 'title']) ? currentRoute.getIn(['meta', 'title']) : 'Welcome'
 
     return <MaterialToolbar
@@ -47,7 +47,7 @@ class PageOneEl extends Component {
     let {navigator, dispatch} = this.props
     return <View style={styles.PageContainer}>
       <Text style={styles.welcome}>Page One</Text>
-      <TouchableOpacity onPress={()=> dispatch(NavActions.to('/page_two')) }><Text>Go to Page 2</Text></TouchableOpacity>
+      <TouchableOpacity onPress={()=> dispatch(NavActions.to('/page_two', {meta: {title: 'Hallo'}})) }><Text>Go to Page 2</Text></TouchableOpacity>
     </View>
   }
 }

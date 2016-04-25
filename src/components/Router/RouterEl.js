@@ -42,7 +42,8 @@ export default class RouterEl extends Component {
       }
     }
 
-    transitionHandler(route, navType){
+    transitionHandler(routeStack, navType){
+      let route = routeStack.toJS()
       switch (navType) {
         case NavConst.PUSH:
           return this.navigator.push(route)

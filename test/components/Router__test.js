@@ -126,20 +126,20 @@ describe("Components/Router", () => {
 
               navigatorStub = {push : sinon.stub(), resetTo: sinon.stub(), pop: sinon.stub(),
                 replace: sinon.stub()}
-              sampleRoute = {}
+              sampleRoute = new RouteStack({path: '/home'})
               wrapperInstance = wrapper.instance()
               wrapperInstance.navigator = navigatorStub
             })
             it("should 'Push' Navigator", () => {
               wrapperInstance.transitionHandler(sampleRoute, NavConst.PUSH)
               expect(navigatorStub.push).to
-                .have.been.calledWith(sampleRoute)
+                .have.been.calledWith(sampleRoute.toJS())
             });
 
             it("should 'Reset' Navigator", () => {
               wrapperInstance.transitionHandler(sampleRoute, NavConst.RESET)
               expect(navigatorStub.resetTo).to
-                .have.been.calledWith(sampleRoute)
+                .have.been.calledWith(sampleRoute.toJS())
             });
 
             it("should 'Pop' Navigator", ()=>{
@@ -151,7 +151,7 @@ describe("Components/Router", () => {
             it("should 'Replace' Navigator", () => {
               wrapperInstance.transitionHandler(sampleRoute, NavConst.REPLACE)
               expect(navigatorStub.replace).to
-                .have.been.calledWith(sampleRoute).once
+                .have.been.calledWith(sampleRoute.toJS()).once
             });
           });
         });

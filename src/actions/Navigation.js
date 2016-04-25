@@ -62,7 +62,7 @@ export function lost(lostRoute) {
   }
 }
 
-export function to(route) {
+export function to(route, options = {}) {
   return (dispatch, getState) => {
     const {Navigation} = getState()
     const routes = Navigation.get('routes')
@@ -70,7 +70,11 @@ export function to(route) {
     if(!targetRoute)
       return dispatch(lost(route));
     else{
-      return dispatch( push(targetRoute) )
+      if(options.params)
+        targetRoute.params =  fromJS(options.params)
+      if(options.meta)
+        targetRoute.meta = fromJS(options.meta)
+      return dispatch( push(new RouteStack({...targetRoute}) ) )
     }
   }
 };
