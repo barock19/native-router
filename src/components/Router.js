@@ -78,6 +78,7 @@ class Router extends Component {
         renderScene={this.renderSceneHandler}
         configureScene={this.configureSceneHandler}
         initialRoute={this.initialRoute}
+        navigationBar={this.props.navigationBar}
         ref={ref => this.navigator = ref}
         />
     }
@@ -87,7 +88,6 @@ class Router extends Component {
         let {path, component} = child.props
         this.routes.push({path, component})
       })
-      console.log('this.rooutes', this.routes)
     }
     componentDidMount(){
       let {dispatch} = this.props
@@ -96,7 +96,7 @@ class Router extends Component {
     }
 
     renderSceneHandler(route, navigator ){
-      let {component, params} = route.toJS()
+      let {component, params} = route
       let Comp = component
       return <View style={styles.transparent}>
         <Comp routes={params} />

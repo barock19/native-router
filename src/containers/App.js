@@ -1,7 +1,8 @@
-import React,{Component, DrawerLayoutAndroid, View, Text} from "react-native";
+import React,{Component, DrawerLayoutAndroid, View, Text, TouchableOpacity} from "react-native";
 import {connect} from 'react-redux'
 import {Toolbar as MaterialToolbar} from "react-native-material-design";
 import Router,{Route} from '../components/Router'
+import * as NavActions from '../actions/Navigation'
 
 class NavView extends Component {
   render(){
@@ -38,23 +39,31 @@ class ToolbarComp extends Component {
     />
   }
 }
-const Toolbar = connect(ToolbarComp)((state) => { return { navigator: state.Navigation } })
-class PageOne extends Component {
+const Toolbar = connect((state) => { return { navigator: state.Navigation } })(ToolbarComp)
+const navFromState = (state)=>{return {Navigation: state.Navigation}}
+
+class PageOneEl extends Component {
   render(){
-    let {navigator} = this.props
+    let {navigator, dispatch} = this.props
     return <View style={styles.PageContainer}>
       <Text style={styles.welcome}>Page One</Text>
+      <TouchableOpacity onPress={()=> dispatch(NavActions.to('/page_two')) }><Text>Go to Page 2</Text></TouchableOpacity>
     </View>
   }
 }
+const PageOne = connect(navFromState)(PageOneEl)
 
-class PageTwo extends Component {
+class PageTwoEl extends Component {
   render(){
+    let {dispatch} = this.props
     return <View style={styles.PageContainer}>
       <Text>Page Two</Text>
+      <TouchableOpacity onPress={()=> dispatch(NavActions.back()) }><Text>Go to Page 2</Text></TouchableOpacity>
     </View>
   }
 }
+const PageTwo = connect(navFromState)(PageTwoEl)
+
 export default class App extends Component {
   render(){
     let drawer = this.drawer
@@ -68,7 +77,7 @@ export default class App extends Component {
           navigationBar={<Toolbar onIconPress={ ()=> drawer.openDrawer() } />}
           >
           <Route path='/' component={PageOne} />
-          <Route path='/page_two' component={PageOne} />
+          <Route path='/page_two' component={PageTwo} />
         </Router>
       </DrawerLayoutAndroid>
   }
