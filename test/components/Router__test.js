@@ -3,7 +3,8 @@ var {shallow, mount} = require('enzyme')
 import {Map, List} from "immutable"
 import {RouteStack} from "../../src/reducers/Navigation";
 import sinon from 'sinon'
-import Router,{Route} from '../../src/components/Router'
+import {Route} from '../../src/components/Router'
+import Router from '../../src/components/Router/RouterEl'
 import * as NavConst from "../../src/constants/Navigation";
 
 describe("Components/Router", () => {

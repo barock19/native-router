@@ -1,29 +1,16 @@
 import React,{Component, Navigator, PropTypes, StyleSheet, Text, View} from "react-native";
 import {connect} from 'react-redux'
-import * as NavConst from "../constants/Navigation"
-import {initialize} from "../actions/Navigation"
+import * as NavConst from "../../constants/Navigation"
+import {initialize} from "../../actions/Navigation"
+import styles from "./Style"
+import Transition from "./Transition"
 
-export class Route extends React.Component {
-  static propTypes = {
-    path: PropTypes.string.isRequired,
-    component: PropTypes.func.isRequired
-  }
-
-  className() {
-    return 'Route';
-  }
-
-  render() {
-    return null;
-  }
-}
-class Router extends Component {
+export default class RouterEl extends Component {
     constructor(props){
       super(props)
       this.routes = []
       this.stateInitialized = false
       let { Navigation, dispatch, children } = this.props
-      console.log('Navigation', Navigation)
       if(Navigation && !Navigation.get('stateInitialized'))
         this.parseRoutes(children, dispatch);
     }
@@ -104,27 +91,9 @@ class Router extends Component {
     }
 
     configureSceneHandler(route, routeStack){
-      return Navigator.SceneConfigs.FloatFromRight
+      return Transition.NONE
     }
 
 
 
 }
-
-export default connect( (state) => { return { Navigation: state.Navigation } })(Router)
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    bottom: 0,
-    justifyContent: 'center',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  transparent: {
-    backgroundColor: 'transparent',
-    flex: 1,
-  },
-});
