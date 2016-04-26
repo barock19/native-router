@@ -5,24 +5,25 @@ import * as NavAction from "../../src/actions/Navigation"
 import sinon from 'sinon'
 
 describe("Reducer/Navigation", () => {
-  let sampleRoute = new RouteStack({path: '/'})
+  let samplePlainRoute = {path: '/somewhere/in/stack'}
+  let sampleRoute = new RouteStack(samplePlainRoute)
 
   describe("when INIT", () => {
     it("should set `initialized` as true, routes and initial stack", () => {
       const currentState = new InitialState({stateInitialized: false})
       const routes = List()
-      const initialRoute = new RouteStack({path: '/'})
+      const initialRoute = {path: '/'}
       const nextState = Reducer(currentState, NavAction.init(routes, initialRoute) )
       expect(nextState.get('stateInitialized')).to.be.true
       expect(nextState.get('routes')).to.be.eq(routes)
-      expect(nextState.get('stack').get(0)).to.equal(initialRoute)
+      expect(nextState.get('stack').get(0)).to.equal(new RouteStack(initialRoute))
     });
   });
 
   describe("when PUSH", () => {
     it("should adds route into stack", () => {
       const currentState = new InitialState()
-      const nextState = Reducer(currentState, NavAction.push(sampleRoute))
+      const nextState = Reducer(currentState, NavAction.push(samplePlainRoute))
       const stack = nextState.get('stack')
       expect(stack).to.have.size(1)
       expect(stack).to.include(sampleRoute)
@@ -44,9 +45,10 @@ describe("Reducer/Navigation", () => {
 
   describe("when REPLACE", () => {
     it("should replace the last route with given route", () => {
-      let otherRoute = new RouteStack({path: '/session/1'})
+      let otherRoutePlain = {path: '/session/1'}
+      let otherRoute = new RouteStack(otherRoutePlain)
       const currentState = new InitialState({stateInitialized: true, stack: List.of(sampleRoute)})
-      const nextState = Reducer(currentState, NavAction.replace(otherRoute))
+      const nextState = Reducer(currentState, NavAction.replace(otherRoutePlain))
       const stack = nextState.get('stack')
       expect(stack).to.have.size(1)
       expect(stack.get(0)).to.equal(otherRoute)
@@ -57,8 +59,9 @@ describe("Reducer/Navigation", () => {
   describe("when RESET", () => {
     it("should add one route to stack", () => {
       const currentState = new InitialState({stateInitialized: true, stack: List.of(sampleRoute)})
-      const route = new RouteStack()
-      const nextState = Reducer(currentState, NavAction.reset(route))
+      const routePlain = {path: '/otherRoute'}
+      const route = new RouteStack(routePlain)
+      const nextState = Reducer(currentState, NavAction.reset(routePlain))
       const stack = nextState.get('stack')
       expect(stack.count()).to.be.eq(1)
       expect(stack.first()).to.be.eq(route)

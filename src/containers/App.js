@@ -26,7 +26,9 @@ styles.button = {
 class ToolbarComp extends Component {
   render(){
     const { onIconPress, navigator } = this.props;
+    console.log(navigator, navigator.get('stack'))
     const currentRoute = navigator && navigator.get('stack').count() > 0 ? navigator.get('stack').last() : false
+    console.log('currentRoute', currentRoute)
     const title =  currentRoute && currentRoute.getIn(['meta', 'title']) ? currentRoute.getIn(['meta', 'title']) : 'Welcome'
 
     return <MaterialToolbar

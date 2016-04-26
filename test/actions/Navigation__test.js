@@ -35,10 +35,10 @@ describe("Actions/Navigation", () => {
 
       dispatcher(to(sampleRoute))
       expect(sampleDispatch).to.have.been.calledWith( sinon.match(
-        { type: NavConts.PUSH , route: new RouteStack(sampleFoundRoute) }))
+        { type: NavConts.PUSH , route: sampleFoundRoute }))
     });
 
-    it.only("should merge second option into RouteStack instance", ()=>{
+    it("should merge second option into RouteStack instance", ()=>{
       const sampleFoundRoute = {path: '/users/10'}
       RouteMatcherStub.returns(sampleFoundRoute)
       const sampleDispatch = sinon.stub()
@@ -49,11 +49,11 @@ describe("Actions/Navigation", () => {
 
       dispatcher(to(sampleRoute, {meta: {title: 'Hello'} } ))
       expect(sampleDispatch).to.have.been.calledWith( sinon.match(
-        {route: new RouteStack( {...sampleFoundRoute, meta: Map({title: 'Hello'})} ), type: NavConts.PUSH }))
+        {route: {...sampleFoundRoute, meta: {title: 'Hello'}}, type: NavConts.PUSH }))
     })
   });
   describe("#initialize", () => {
-    let routeToSegmentStub, sampleDispatch, sampleGetState, dispatcher
+    let routeToSegmentStub, sampleDispatch, sampleGetState, dispatcher, RouteMatcherStub
     let samplePlainRoutes = [
       {path: '/users/:id'}
     ]
@@ -61,6 +61,9 @@ describe("Actions/Navigation", () => {
     beforeEach(() => {
       routeToSegmentStub = sinon.stub()
       NavigationRewire.__Rewire__('routeToSegment', routeToSegmentStub)
+      RouteMatcherStub = sinon.stub()
+      NavigationRewire.__Rewire__('RouteMatcher', RouteMatcherStub)
+
       sampleDispatch = sinon.stub()
       sampleGetState = sinon.stub().returns({})
       dispatcher = sinon.stub().yields(sampleDispatch, sampleGetState)
@@ -72,17 +75,21 @@ describe("Actions/Navigation", () => {
     })
 
     it("should dispatch INIT action including routes with `segments info` and initialroute", () => {
-      let segmentInfoDouble = sinon.spy()
-      let initialrouteDouble = sinon.spy()
-      routeToSegmentStub.returns(segmentInfoDouble)
-      NavigationRewire.__Rewire__('createRouteStack', sinon.stub().returns(initialrouteDouble))
+      let generatedSegmentInfo = {this_is_fake_segmentInfo: 'ok'}
+      routeToSegmentStub.returns(generatedSegmentInfo)
+      let initialRouteFound = {this_is_fake_initial_route: 'ok'}
+      RouteMatcherStub.returns(initialRouteFound)
 
       dispatcher(initialize(samplePlainRoutes, '/'))
       expect(sampleDispatch).to
-        .have.been.calledWith(sinon.match({type: NavConts.INIT, routes: [{
-          path: '/users/:id',
-          _segmentInfo: segmentInfoDouble
-        }], initialRoute: initialrouteDouble}))
+        .have.been.calledWith(sinon.match({
+          type: NavConts.INIT,
+          routes: [{
+            path: '/users/:id',
+            _segmentInfo: generatedSegmentInfo
+          }],
+          initialRoute: initialRouteFound
+        }))
     });
   });
 });

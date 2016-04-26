@@ -1,6 +1,4 @@
-import {fromJS, List, Map} from "immutable";
 import RouteMatcher, {routeToSegment} from "../services/RouteMatcher"
-import {RouteStack} from '../reducers/Navigation'
 import {
   INIT,
   PUSH,
@@ -10,10 +8,6 @@ import {
   RESET,
   LOST
 } from '../constants/Navigation'
-
-function createRouteStack(route) {
-  return new RouteStack(route)
-}
 
 export function pop() {
   return {
@@ -70,11 +64,7 @@ export function to(route, options = {}) {
     if(!targetRoute)
       return dispatch(lost(route));
     else{
-      if(options.params)
-        targetRoute.params =  fromJS(options.params)
-      if(options.meta)
-        targetRoute.meta = fromJS(options.meta)
-      return dispatch( push(new RouteStack({...targetRoute}) ) )
+      return dispatch( push({...targetRoute, ...options}) )
     }
   }
 };
@@ -98,13 +88,7 @@ export function initialize(routesList, initial) {
         item._segmentInfo = routeToSegment(item.path)
         return item
       })
-    let initialRouteaFound = RouteMatcher(parsedRoutes, initial)
-    let initialRoute
-
-    if(initialRouteaFound){
-      initialRoute = createRouteStack(initialRouteaFound)
-    }
-
+    let initialRoute = RouteMatcher(parsedRoutes, initial)
     dispatch(init(parsedRoutes, initialRoute))
   }
 }
