@@ -1,7 +1,7 @@
 import React,{Component, DrawerLayoutAndroid, View, Text, TouchableOpacity} from "react-native";
 import {connect} from 'react-redux'
 import {Toolbar as MaterialToolbar} from "react-native-material-design";
-import Router,{Route} from '../components/Router'
+import Router,{Route, Link} from '../components/Router'
 import * as NavActions from '../actions/Navigation'
 
 class NavView extends Component {
@@ -49,7 +49,9 @@ class PageOneEl extends Component {
     let {navigator, dispatch} = this.props
     return <View style={styles.PageContainer}>
       <Text style={styles.welcome}>Page One</Text>
-      <TouchableOpacity onPress={()=> dispatch(NavActions.to('/page_two', {meta: {title: 'Hallo'}})) }><Text>Go to Page 2</Text></TouchableOpacity>
+      <Link to="/page_two" meta={{title: 'Hello'}}>
+        <Text>Go to Page2</Text>
+      </Link>
     </View>
   }
 }
@@ -60,7 +62,12 @@ class PageTwoEl extends Component {
     let {dispatch} = this.props
     return <View style={styles.PageContainer}>
       <Text>Page Two</Text>
-      <TouchableOpacity onPress={()=> dispatch(NavActions.back()) }><Text>Go to Page 2</Text></TouchableOpacity>
+      <Link to="/">
+        <Text>push to Page1</Text>
+      </Link>
+      <Link back={true}>
+        <Text>Back to Page1</Text>
+      </Link>
     </View>
   }
 }
@@ -75,9 +82,7 @@ export default class App extends Component {
       renderNavigationView={()=> <NavView />}
       ref={ drawer => this.drawer = drawer }
       >
-        <Router
-          navigationBar={<Toolbar onIconPress={ ()=> this.drawer && this.drawer.openDrawer() } />}
-          >
+        <Router>
           <Route path='/' component={PageOne} />
           <Route path='/page_two' component={PageTwo} />
         </Router>

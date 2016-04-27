@@ -1,7 +1,7 @@
-import React,{Component, Navigator, PropTypes, StyleSheet, Text, View} from "react-native";
+import React,{Component, Navigator, PropTypes, StyleSheet, Text, View, BackAndroid} from "react-native";
 import {connect} from 'react-redux'
 import * as NavConst from "../../constants/Navigation"
-import {initialize} from "../../actions/Navigation"
+import {initialize, back} from "../../actions/Navigation"
 import styles from "./Style"
 import Transition from "./Transition"
 
@@ -81,6 +81,11 @@ export default class RouterEl extends Component {
       let {dispatch} = this.props
       if(this.routes.length > 0)
         dispatch(initialize(this.routes, '/'));
+
+      BackAndroid.addEventListener('hardwareBackPress', ()=>{
+        dispatch(back())
+        return true
+      })
     }
 
     renderSceneHandler(route, navigator ){
