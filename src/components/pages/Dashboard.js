@@ -1,9 +1,12 @@
-import React, {
-  Component,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, { Component, StyleSheet, Text, View, Image } from 'react-native';
+import {
+  Card,
+  Button,
+  TYPO,
+  COLOR
+} from 'react-native-material-design';
+
+import {Link} from "../../components/Router"
 
 import Style from "../../styles"
 export default class Dashboard extends Component {
@@ -11,7 +14,11 @@ export default class Dashboard extends Component {
     let {actions} = this.props
     return <View style={Style.PageContainer}>
       <Text>Dashboard</Text>
-      <Text onPress={ ()=> actions.push({name: 'course'}) }>Go to Course</Text>
+      <Link
+        to={'page_two'}
+        meta={{title: 'Course'}}>
+        <Text>Go to Course</Text>
+      </Link>
     </View>
   }
 }

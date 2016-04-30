@@ -13,5 +13,6 @@ export default StyleSheet.create({
   transparent: {
     backgroundColor: 'transparent',
     flex: 1,
+    marginTop: 56
   },
 });

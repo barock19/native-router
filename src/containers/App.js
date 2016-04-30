@@ -2,90 +2,59 @@ import React,{Component, DrawerLayoutAndroid, View, Text, TouchableOpacity} from
 import {connect} from 'react-redux'
 import {Toolbar as MaterialToolbar} from "react-native-material-design";
 import Router,{Route, Link} from '../components/Router'
+import NavView from "../components/NavView"
+import Toolbar from "../components/Toolbar"
 import * as NavActions from '../actions/Navigation'
+import {updateToggleState as updateDrawerOpenState } from "../actions/NavDrawer"
 
-class NavView extends Component {
-  render(){
-    return <View style={{flex: 1, backgroundColor: '#ffffff'}}>
-      <Text>Nav View</Text>
-    </View>
-  }
-}
-import styles from "../styles"
-styles.welcome = {
-  fontSize: 20,
-  textAlign: 'center',
-  color: '#5a6598'
-}
-styles.button = {
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  backgroundColor: '#e83842',
-}
+import {
+  Dashboard,
+  Course
+} from '../components/pages'
 
-class ToolbarComp extends Component {
-  render(){
-    const { onIconPress, navigator } = this.props;
-    console.log(navigator, navigator.get('stack'))
-    const currentRoute = navigator && navigator.get('stack').count() > 0 ? navigator.get('stack').last() : false
-    console.log('currentRoute', currentRoute)
-    const title =  currentRoute && currentRoute.getIn(['meta', 'title']) ? currentRoute.getIn(['meta', 'title']) : 'Welcome'
 
-    return <MaterialToolbar
-      title={title}
-      icon={'menu'}
-      onIconPress={() => onIconPress() }
-      rightIconStyle={{
-          margin: 10
-      }}
-    />
-  }
-}
-const Toolbar = connect((state) => { return { navigator: state.Navigation } })(ToolbarComp)
-const navFromState = (state)=>{return {Navigation: state.Navigation}}
-
-class PageOneEl extends Component {
-  render(){
-    let {navigator, dispatch} = this.props
-    return <View style={styles.PageContainer}>
-      <Text style={styles.welcome}>Page One</Text>
-      <Link to="/page_two" meta={{title: 'Hello'}}>
-        <Text>Go to Page2</Text>
-      </Link>
-    </View>
-  }
-}
-const PageOne = connect(navFromState)(PageOneEl)
-
-class PageTwoEl extends Component {
+class App extends Component {
   render(){
     let {dispatch} = this.props
-    return <View style={styles.PageContainer}>
-      <Text>Page Two</Text>
-      <Link to="/">
-        <Text>push to Page1</Text>
-      </Link>
-      <Link back={true}>
-        <Text>Back to Page1</Text>
-      </Link>
-    </View>
-  }
-}
-const PageTwo = connect(navFromState)(PageTwoEl)
-
-export default class App extends Component {
-  render(){
-    let drawer = this.drawer
     return <DrawerLayoutAndroid
       drawerWidth={300}
+      onDrawerClose={ ()=> dispatch( updateDrawerOpenState({onClose: true}) ) }
+      onDrawerOpen={ ()=> dispatch( updateDrawerOpenState({onOpen: true}) )}
       drawerPosition={DrawerLayoutAndroid.positions.Left}
       renderNavigationView={()=> <NavView />}
-      ref={ drawer => this.drawer = drawer }
-      >
-        <Router>
-          <Route path='/' component={PageOne} />
-          <Route path='/page_two' component={PageTwo} />
+      ref={ drawer => this.drawer = drawer } >
+        <Router navigationBar={<Toolbar defaultTitle='Elvan Emrick'/>}>
+          <Route path='/' component={Dashboard} />
+          <Route path='/page_two' component={Course} />
         </Router>
       </DrawerLayoutAndroid>
   }
+  componentDidMount(){
+    if(this.props.openDrawer){
+      this.drawer.open()
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    this.handleDrawer(nextProps)
+  }
+
+  handleDrawer(nextProps){
+    let {openDrawer} = nextProps
+    if(openDrawer == this.props.openDrawer)
+      return true;
+
+    if(openDrawer == false){
+      this.drawer.closeDrawer()
+    }else{
+      this.drawer.openDrawer()
+    }
+  }
 }
+
+const mapStateToProp = (state)=>{
+  return {
+    openDrawer: state.NavDrawer.get('isOpen')
+  }
+}
+
+export default connect(mapStateToProp)(App)
