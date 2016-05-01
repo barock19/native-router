@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#387bdf',
+    elevation: 5
   },
   leftButton: {
     width: 60,
